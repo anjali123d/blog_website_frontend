@@ -1,0 +1,68 @@
+import React from 'react'
+import { Link } from 'react-router-dom'
+import Logo from '../assets/Profile_photo.png'
+import { FaFacebook, FaInstagram, FaPinterest, FaTwitterSquare } from 'react-icons/fa'
+import { Input } from './ui/input'
+import { Button } from './ui/button'
+
+const Footer = () => {
+  return (
+      <div className="bg-gray-800 text-gray-200 py-10">
+
+        <div className='max-w-7xl mx-auto px-4 md:flex md:justify-between'>
+          {/* info */}
+          <div className='mb-6 md:mb-0'>
+            <Link to='/' className='flex gap-3 items-center'>
+              <img src={Logo} className='invert w-12 h-12'/>
+              <h1 className='text-3xl font-bold'>Blog</h1>
+            </Link>
+            <p className='mt-2'>Shering insights, tutorials and ideas on web development and tech.</p>
+            <p className='mt-2 text-sm '>29 Blog, Una City, Girsomnath-362560, Gujrat-India</p>
+            <p className='text-sm'>Email: gohilhari2001@gmail.com</p>
+            <p className='text-sm'>Phone: 9824913373</p>
+          </div>
+
+          {/* customer service link */}
+          <div className='mb-6 md:mb-0'>
+            <h3 className='text-xl font-semibold'>Quick Links</h3>
+            <ul className='mt-2 text-sm space-y-2'>
+              <Link to='/'>Home</Link> <br />
+              <Link to='/blogs'> Blog</Link> <br />
+              <Link to='/about'>About</Link> <br />
+              <Link to='/dashboard/profile'>YourProfile</Link> <br />
+              <Link to='/dashboard/your-blog'>YourBlog</Link><br />
+              <Link to='/dashboard/write-blog'>CreatBlog</Link> <br />
+            </ul>
+          </div>
+
+          {/* social media links */}
+          <div className='mb-6 md:mb-0'>
+            <h3 className='text-xl font-semibold'>Follow Us</h3>
+            <div className='flex space-x-4 mt-2'>
+              <FaFacebook />
+              <FaInstagram />
+              <FaTwitterSquare />
+              <FaPinterest />
+            </div>
+          </div>
+
+          {/* Newsletter subscription */}
+          <div>
+            <h3 className='text-xl font-semibold'>Stay in the Loop</h3>
+            <p className='mt-2 text-sm'>Subscribe to get special offers, free giveaways and more</p>
+            <form className='mt-4 flex gap-2'>
+              <Input type="email" placeholder="Your email address" className="w-full p-2 rounded-l-md bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500" />
+              <Button type='submit' className='bg-red-600 text-white px-4 rounded-r-md hover:bg-red-700'>Subscribe</Button>
+            </form>
+          </div>
+        </div>
+
+        {/* bottom section */}
+        <div className='mt-8 border-t border-gray-700 pt-6 text-center text-sm'>
+          <p>&copy; {new Date().getFullYear()} <span className='text-red-500'>Blog</span>. All rights reserved</p>
+        </div>
+      </div>
+  )
+}
+
+export default Footer
