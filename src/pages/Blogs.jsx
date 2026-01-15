@@ -4,17 +4,17 @@ import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import BlogCard from '../components/BlogCard';
-
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const Blogs = () => {
 
   const dispatch = useDispatch();
-  const {blog} = useSelector(store => store.blog)
+  const { blog } = useSelector(store => store.blog)
 
-  useEffect(()=> {
+  useEffect(() => {
     const getAllPublishedBlogs = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/v1/blog/get-published-blogs`, {withCredentials:true})
-        if(res.data.success){
+        const res = await axios.get(`${BASE_URL}/api/v1/blog/get-published-blogs`, { withCredentials: true })
+        if (res.data.success) {
           dispatch(setBlog(res.data.blogs))
         }
       } catch (error) {
@@ -22,7 +22,7 @@ const Blogs = () => {
       }
     }
     getAllPublishedBlogs()
-  },[])
+  }, [])
 
   return (
     <div className='pt-16 md:h-screen w-screen'>
@@ -37,7 +37,7 @@ const Blogs = () => {
           })
         }
       </div>
-    </div> 
+    </div>
   )
 }
 

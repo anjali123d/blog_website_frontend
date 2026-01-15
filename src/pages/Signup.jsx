@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
@@ -43,7 +44,7 @@ const Signup = () => {
 
     try {
       const res = await axios.post(
-        `http://localhost:8000/api/v1/user/register`,
+        `${BASE_URL}/api/v1/user/register`,
         user,
         {
           headers: {

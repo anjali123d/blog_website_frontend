@@ -2,7 +2,7 @@ import store from "../redux/store";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { Link } from "react-router-dom";
 
 import {
@@ -29,40 +29,40 @@ const BlogView = () => {
   const { blog } = useSelector((store) => store.blog);
   const selectedBlog = blog.find((blog) => blog._id === blogId);
   const [blogLike, setBlogLike] = useState(selectedBlog.likes.length);
-  const {user} = useSelector(store => store.auth)
+  const { user } = useSelector(store => store.auth)
   const [liked, setLiked] = useState(selectedBlog.likes.includes(user._id) || false)
 
 
   const changeTimeFormat = (isDate) => {
     const date = new Date(isDate);
-    const options = {day:'numeric', month:'long', year:'numeric'}
+    const options = { day: 'numeric', month: 'long', year: 'numeric' }
     const formattedDate = date.toLocaleDateString('en-GB', options)
     return formattedDate
   }
 
-  const handleShare = (blogId) =>{
+  const handleShare = (blogId) => {
     const blogUrl = `${window.location.origin}/blogs/${blogId}`
 
-    if(navigator.share){
-        navigator.share({
-            title:'Check out this blog!',
-            text:"Read this amazing blog post",
-            url:blogUrl,
-        }).then(()=>console.log("shared successfully")
-        ).catch((err) => console.error("Error Sharing:", err))
-    } else{
-        navigator.clipboard.writeText(blogUrl).then(() =>{
-            toast.success('Blog Link copied to clipboard')
-        })
+    if (navigator.share) {
+      navigator.share({
+        title: 'Check out this blog!',
+        text: "Read this amazing blog post",
+        url: blogUrl,
+      }).then(() => console.log("shared successfully")
+      ).catch((err) => console.error("Error Sharing:", err))
+    } else {
+      navigator.clipboard.writeText(blogUrl).then(() => {
+        toast.success('Blog Link copied to clipboard')
+      })
     }
   }
 
-  const likeOrDislikeHandler = async() => {
+  const likeOrDislikeHandler = async () => {
     try {
-      const action = liked ? 'dislike':'like'
-      const res = await axios.get(`http://localhost:8000/api/v1/blog/${selectedBlog._id}/${action}`, {withCredentials:true})
-      if(res.data.success){
-        const updatedLikes = liked ? blogLike -1 : blogLike +1;
+      const action = liked ? 'dislike' : 'like'
+      const res = await axios.get(`${BASE_URL}/api/v1/blog/${selectedBlog._id}/${action}`, { withCredentials: true })
+      if (res.data.success) {
+        const updatedLikes = liked ? blogLike - 1 : blogLike + 1;
         setBlogLike(updatedLikes)
         setLiked(!liked)
       }
@@ -70,10 +70,10 @@ const BlogView = () => {
       const updatedBlogData = blog.map(p => p._id === selectedBlog._id ? {
         ...p,
         likes: liked ? p.likes.filter(id => id !== user._id) : [...p.likes, user._id]
-      }: p
-    )
-    toast.success(res.data.message)
-    dispatch(setBlog(updatedBlogData))
+      } : p
+      )
+      toast.success(res.data.message)
+      dispatch(setBlog(updatedBlogData))
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message)
@@ -82,7 +82,7 @@ const BlogView = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0)
-  },[])
+  }, [])
 
   return (
     <div className="pt-14 ">
@@ -95,7 +95,7 @@ const BlogView = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
-            
+
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
                 <Link href="/docs/components">Blogs</Link>
@@ -110,50 +110,50 @@ const BlogView = () => {
 
         {/* blog header */}
         <div className="my-8 ">
-            <h1 className="text-4xl font-bold tracking-tight mb-4">{selectedBlog.title}</h1>
-            <div className="flex items-center justify-between flex-wrap gap-4">
-                <div className="flex items-center space-x-4">
-                    <Avatar>
-                        <AvatarImage src={selectedBlog.author.photoUrl} alt="author" />
-                        <AvatarFallback>HG</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className="font-medium">{selectedBlog.author.firstName} {selectedBlog.author.lastName}</p>
-                    </div>
-                </div>
-                <p className="text-sm text-muted-foreground">Published on {changeTimeFormat(selectedBlog.createdAt)} </p>
+          <h1 className="text-4xl font-bold tracking-tight mb-4">{selectedBlog.title}</h1>
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center space-x-4">
+              <Avatar>
+                <AvatarImage src={selectedBlog.author.photoUrl} alt="author" />
+                <AvatarFallback>HG</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-medium">{selectedBlog.author.firstName} {selectedBlog.author.lastName}</p>
+              </div>
             </div>
+            <p className="text-sm text-muted-foreground">Published on {changeTimeFormat(selectedBlog.createdAt)} </p>
+          </div>
         </div>
 
         {/* featured image */}
         <div className="mb-8 rounded-lg overflow-hidden">
-            <img className="w-full object-cover" height={500} width={1000} src={selectedBlog.thumbnail} alt="Thumbnail" />
-            <p className="text-sm text-muted-foreground mt-2 italic">{selectedBlog.subtitle}</p>
+          <img className="w-full object-cover" height={500} width={1000} src={selectedBlog.thumbnail} alt="Thumbnail" />
+          <p className="text-sm text-muted-foreground mt-2 italic">{selectedBlog.subtitle}</p>
         </div>
 
         <p>{selectedBlog.description}</p>
 
         <div className="mt-10">
-            {/* engagement */}
-            <div className="flex items-center justify-between border-y dark:border-gray-800 border-gray-300 py-4 mb-8">
-                <div className="flex items-center space-x-4">
-                    <Button onClick={likeOrDislikeHandler} variant="ghost" className="flex items-center gap-1">
-                    {
-                      liked ? <FaHeart size={24} className="cursor-pointer text-red-600" /> : <FaRegHeart size={24} className="cursor-pointer hover:text-gray-600 text-white"/>
-                    }
-                    <span>{blogLike}</span>
-                    </Button>
-                    <Button variant="ghost" size="sm"><MessageSquare className="h-4 w-4" /><span>1 Comments</span></Button>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <Button variant="ghost" size="sm" >
-                        <BookMarked className="w-4 h-4" />
-                    </Button>
-                    <Button onClick={() => handleShare(selectedBlog._id)} variant="ghost" size="sm">
-                        <Share2  className="w-4 h-4" />
-                    </Button>
-                </div>
+          {/* engagement */}
+          <div className="flex items-center justify-between border-y dark:border-gray-800 border-gray-300 py-4 mb-8">
+            <div className="flex items-center space-x-4">
+              <Button onClick={likeOrDislikeHandler} variant="ghost" className="flex items-center gap-1">
+                {
+                  liked ? <FaHeart size={24} className="cursor-pointer text-red-600" /> : <FaRegHeart size={24} className="cursor-pointer hover:text-gray-600 text-white" />
+                }
+                <span>{blogLike}</span>
+              </Button>
+              <Button variant="ghost" size="sm"><MessageSquare className="h-4 w-4" /><span>1 Comments</span></Button>
             </div>
+            <div className="flex items-center space-x-2">
+              <Button variant="ghost" size="sm" >
+                <BookMarked className="w-4 h-4" />
+              </Button>
+              <Button onClick={() => handleShare(selectedBlog._id)} variant="ghost" size="sm">
+                <Share2 className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
         </div>
 
         <CommentBox selectedBlog={selectedBlog} />

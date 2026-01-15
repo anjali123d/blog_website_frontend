@@ -11,6 +11,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { toast } from "sonner";
 import BlogCard from "./BlogCard";
 import { setBlog } from "../redux/blogSlice";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,7 +45,7 @@ const CommentBox = ({ selectedBlog }) => {
   const commentHandler = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:8000/api/v1/comment/${selectedBlog._id}/create`,
+        `${BASE_URL}/api/v1/comment/${selectedBlog._id}/create`,
         { content },
         {
           headers: {
@@ -81,8 +82,8 @@ const CommentBox = ({ selectedBlog }) => {
 
   const deleteComment = async (commentId) => {
     try {
-      const res = await axios.delete(`http://localhost:8000/api/v1/comment/${commentId}/delete`, {withCredentials:true})
-      if(res.data.success){
+      const res = await axios.delete(`${BASE_URL}/api/v1/comment/${commentId}/delete`, { withCredentials: true })
+      if (res.data.success) {
         const updatedCommentData = comment.filter((item) => item._id !== commentId)
         dispatch(setComment(updatedCommentData))
         toast.success(res.data.message)
@@ -93,56 +94,56 @@ const CommentBox = ({ selectedBlog }) => {
     }
   }
 
-    const editingCommentHandler = async(commentId) => {
-      try {
-        const res = await axios.put(`http://localhost:8000/api/v1/comment/${commentId}/edit`, {content:editedContent},
-          {
-            withCredentials: true,
-            headers:{
-              "Content-Type":"application/json"
-            }
+  const editingCommentHandler = async (commentId) => {
+    try {
+      const res = await axios.put(`${BASE_URL}/api/v1/comment/${commentId}/edit`, { content: editedContent },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json"
           }
+        }
+      );
+      if (res.data.success) {
+        const updatedCommentData = comment.map(item =>
+          item._id === commentId ? { ...item, content: editedContent } : item
         );
-        if(res.data.success){
-          const updatedCommentData = comment.map(item => 
-            item._id === commentId ? {...item, content:editedContent} : item
-          );
-          dispatch(setComment(updatedCommentData))
-          toast.success(res.data.message)
-          setEditingCommentId(null)
-          setEditedContent("")
-        }
-      } catch (error) {
-        console.log(error);
-        toast.error("Failed to edit comment")
+        dispatch(setComment(updatedCommentData))
+        toast.success(res.data.message)
+        setEditingCommentId(null)
+        setEditedContent("")
       }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to edit comment")
     }
+  }
 
-    const likeCommentHandler = async(commentId) =>{
-      try {
-        const res = await axios.get(`http://localhost:8000/api/v1/comment/${commentId}/like`, {
-          withCredentials:true
-        });
-        if(res.data.success){
-          const updatedComment = res.data.updatedComment;
+  const likeCommentHandler = async (commentId) => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/v1/comment/${commentId}/like`, {
+        withCredentials: true
+      });
+      if (res.data.success) {
+        const updatedComment = res.data.updatedComment;
 
-          const updatedCommentList = comment.map(item => 
-            item._id === commentId ? updatedComment :item
-          )
-          dispatch(setComment(updatedCommentList));
-          toast.success(res.data.message)
-        }
-      } catch (error) {
-        console.error("Error liking comment", error)
-        toast.error("Somthing went wrong")
+        const updatedCommentList = comment.map(item =>
+          item._id === commentId ? updatedComment : item
+        )
+        dispatch(setComment(updatedCommentList));
+        toast.success(res.data.message)
       }
+    } catch (error) {
+      console.error("Error liking comment", error)
+      toast.error("Somthing went wrong")
     }
+  }
 
   useEffect(() => {
     const getAllCommentOfBlog = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/v1/comment/${selectedBlog._id}/comment/all`
+          `${BASE_URL}/api/v1/comment/${selectedBlog._id}/comment/all`
         );
         const data = res.data.comments;
         dispatch(setComment(data));
@@ -196,9 +197,9 @@ const CommentBox = ({ selectedBlog }) => {
                       {
                         editingCommentId === item?._id ? (
                           <>
-                            <Textarea 
-                              value = {editedContent}
-                              onChange = {(e) => setEditedContent(e.target.value)}
+                            <Textarea
+                              value={editedContent}
+                              onChange={(e) => setEditedContent(e.target.value)}
                               className="mb-2 bg-gray-200 dark:bg-gray-700"
                             />
                             <div className="flex py-1 gap-2">
@@ -208,34 +209,34 @@ const CommentBox = ({ selectedBlog }) => {
                           </>
                         ) : <p>{item?.content}</p>
                       }
-                      
+
 
                       <div className="flex gap-5 items-center">
                         <div className="flex gap-2 items-center">
-                          <div onClick={()=>likeCommentHandler(item._id)} className="flex gap-1 items-center cursor-pointer">
+                          <div onClick={() => likeCommentHandler(item._id)} className="flex gap-1 items-center cursor-pointer">
                             {
-                              item.likes.includes(user._id) ? <FaHeart fill="red" /> : <FaRegHeart  />
+                              item.likes.includes(user._id) ? <FaHeart fill="red" /> : <FaRegHeart />
                             }
-                            
+
                             <span>{item.numberOfLikes}</span>
                           </div>
-                        </div> 
+                        </div>
                         <p className="text-sm cursor-pointer">Reply</p>
                       </div>
                     </div>
                   </div>
                   {
-                    user._id === item?.userId?._id ? 
-                    <DropdownMenu>
-                      <DropdownMenuTrigger><BsThreeDots /></DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => {
-                          setEditingCommentId(item._id);
-                          setEditedContent(item.content)
-                        }}><Edit />Edit</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => deleteComment(item._id)} className="text-red-500"><Trash2 />Delete</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu> : null
+                    user._id === item?.userId?._id ?
+                      <DropdownMenu>
+                        <DropdownMenuTrigger><BsThreeDots /></DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem onClick={() => {
+                            setEditingCommentId(item._id);
+                            setEditedContent(item.content)
+                          }}><Edit />Edit</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => deleteComment(item._id)} className="text-red-500"><Trash2 />Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu> : null
                   }
                 </div>
               </div>

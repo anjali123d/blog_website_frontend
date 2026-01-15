@@ -4,6 +4,7 @@ import { Card } from "../components/ui/card";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { Select, SelectGroup, SelectLabel } from "../components/ui/select";
 import {
   SelectContent,
@@ -26,7 +27,7 @@ const UpdateBlog = () => {
   const dispatch = useDispatch()
   const params = useParams()
   const id = params.blogId
-  const {blog, loading} = useSelector(store => store.blog)
+  const { blog, loading } = useSelector(store => store.blog)
   const selectBlog = blog.find(blog => blog._id === id)
   const [content, setContent] = useState(selectBlog.description)
   const [publish, setPublish] = useState(false)
@@ -35,35 +36,35 @@ const UpdateBlog = () => {
 
   const [blogData, setBlogData] = useState({
     title: selectBlog?.title,
-    Subtitle:selectBlog?.Subtitle,
+    Subtitle: selectBlog?.Subtitle,
     description: selectBlog?.description,
     category: selectBlog?.category
   })
 
-  const handleChange = (e)=>{
-    const {name, value} = e.target;
-    setBlogData((prev)=>({
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setBlogData((prev) => ({
       ...prev,
-      [name]:value
+      [name]: value
     }))
   }
 
-  const selectCategory = (value)=>{
-    setBlogData({...blogData, category:value})
+  const selectCategory = (value) => {
+    setBlogData({ ...blogData, category: value })
   }
 
   const [previewThumbnail, setPreviewThumbnail] = useState(selectBlog?.thumbnail || null);
 
-const selectThumbnail = (e) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
+  const selectThumbnail = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  setBlogData((prev) => ({ ...prev, thumbnail: file }));
+    setBlogData((prev) => ({ ...prev, thumbnail: file }));
 
-  const reader = new FileReader();
-  reader.onloadend = () => setPreviewThumbnail(reader.result);
-  reader.readAsDataURL(file);
-};
+    const reader = new FileReader();
+    reader.onloadend = () => setPreviewThumbnail(reader.result);
+    reader.readAsDataURL(file);
+  };
 
   // const UpdateBlogHandler = async ()={
   //   const formData = new FormData()
@@ -72,27 +73,27 @@ const selectThumbnail = (e) => {
   //   formData.append("description", content)
   //   formData.append("category", blogData.category)
   const UpdateBlogHandler = async () => {
-  const formData = new FormData();
-  formData.append("title", blogData.title);
-  formData.append("subtitle", blogData.Subtitle);
-  formData.append("description", blogData.description);
-  formData.append("category", blogData.category);
+    const formData = new FormData();
+    formData.append("title", blogData.title);
+    formData.append("subtitle", blogData.Subtitle);
+    formData.append("description", blogData.description);
+    formData.append("category", blogData.category);
     formData.append("file", blogData.thumbnail)
-    try{
+    try {
       dispatch(setLoading(true))
-      const res = await axios.put(`http://localhost:8000/api/v1/blog/${id}`, formData, {
-        headers:{
-          "Content-Type":"multipart/form-data"
+      const res = await axios.put(`${BASE_URL}/api/v1/blog/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
         },
-        withCredentials:true
+        withCredentials: true
       })
-      if(res.data.success){
+      if (res.data.success) {
         toast.success(res.data.message)
       }
-    } catch(error) {
+    } catch (error) {
       console.log(error);
-      
-    }finally{
+
+    } finally {
       dispatch(setLoading(false))
     }
   }
@@ -100,17 +101,17 @@ const selectThumbnail = (e) => {
 
   const tpgglePublishUnpublish = async (action) => {
     try {
-      const res = await axios.patch(`http://localhost:8000/api/v1/blog/${id}`, {
-        params:{
+      const res = await axios.patch(`${BASE_URL}/api/v1/blog/${id}`, {
+        params: {
           action
         },
-        withCredentials:true
+        withCredentials: true
       })
-      if(res.data.success){
+      if (res.data.success) {
         setPublish(!publish)
         toast.success(res.data.message)
         navigate('/dashboard/your-blog')
-      } else{
+      } else {
         toast.error("Failed to update")
       }
     } catch (error) {
@@ -118,10 +119,10 @@ const selectThumbnail = (e) => {
     }
   }
 
-  const deleteBlog = async()=> {
+  const deleteBlog = async () => {
     try {
-      const res = await axios.delete(`http://localhost:8000/api/v1/blog/delete/${id}`, {withCredentials:true})
-      if(res.data.success){
+      const res = await axios.delete(`${BASE_URL}/api/v1/blog/delete/${id}`, { withCredentials: true })
+      if (res.data.success) {
         const updatedBlogData = blog.filter((blogItem) => blogItem?._id !== id);
         dispatch(setBlog(updatedBlogData))
         toast.success(res.data.message)
@@ -141,7 +142,7 @@ const selectThumbnail = (e) => {
           <h1 className="text-4xl font-bold">Basic Blog Information</h1>
           <p>Make changes to your blogs here. Click publish when are done</p>
           <div className="space-x-2">
-            <Button onClick={()=>tpgglePublishUnpublish(selectBlog.isPublished ? "false":"true")}>
+            <Button onClick={() => tpgglePublishUnpublish(selectBlog.isPublished ? "false" : "true")}>
               {
                 selectBlog?.isPublished ? "UnPublish" : "Publish"
               }
@@ -176,7 +177,7 @@ const selectThumbnail = (e) => {
               <textarea
                 name="description"
                 value={blogData.description}
-                onChange={handleChange} 
+                onChange={handleChange}
                 ref={editor}
                 className="
                     jodit_toolbar
@@ -197,7 +198,7 @@ const selectThumbnail = (e) => {
                     "
                 placeholder="Write your Blog..."
               />
-              
+
             </div>
           </div>
 
@@ -231,7 +232,7 @@ const selectThumbnail = (e) => {
 
           <div>
             <Label className="mb-2">Thumbnail</Label>
-            <Input 
+            <Input
               type="file"
               id="file"
               key={previewThumbnail}
@@ -247,12 +248,12 @@ const selectThumbnail = (e) => {
           </div>
 
           <div className="flex gap-3">
-            <Button variant="outline" onClick={()=> navigate(-1)}>Back</Button>
+            <Button variant="outline" onClick={() => navigate(-1)}>Back</Button>
             <Button onClick={UpdateBlogHandler}>
               {
                 loading ? <><Loader2 className="mr-2 w-4 h-4 animate-spin" />Please wait</> : "Save"
               }</Button>
-            </div>
+          </div>
 
         </Card>
       </div>

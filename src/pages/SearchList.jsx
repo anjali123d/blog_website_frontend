@@ -3,7 +3,7 @@ import store from "../redux/store.js";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const SearchList = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);

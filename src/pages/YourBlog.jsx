@@ -1,6 +1,6 @@
 import { Card } from "../components/ui/card";
 import React, { useEffect } from "react";
-
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import {
   Table,
   TableBody,
@@ -86,44 +86,44 @@ const invoices = [
 const YourBlog = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const {blog} = useSelector(store =>store.blog)
+  const { blog } = useSelector(store => store.blog)
   console.log(blog);
 
-  const getOwnBlog = async()=>{
-  try {
-    const res = await axios.get(`http://localhost:8000/api/v1/blog/get-own-blogs`, {withCredentials:true})
-    if(res.data.success){
-      dispatch(setBlog(res.data.blogs))
+  const getOwnBlog = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/v1/blog/get-own-blogs`, { withCredentials: true })
+      if (res.data.success) {
+        dispatch(setBlog(res.data.blogs))
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
   }
-}
 
   const deleteBlog = async (id) => {
     try {
-      const res = await axios.delete(`http://localhost:8000/api/v1/blog/delete/${id}`, {withCredentials:true})
-      if(res.data.success){
-        const updatedBlogData = blog.filter((blogItem) => blogItem?._id !== id) 
+      const res = await axios.delete(`${BASE_URL}/api/v1/blog/delete/${id}`, { withCredentials: true })
+      if (res.data.success) {
+        const updatedBlogData = blog.filter((blogItem) => blogItem?._id !== id)
         dispatch(setBlog(updatedBlogData))
         toast.success(res.data.message)
       }
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong")
-      
+
     }
   }
 
-useEffect(()=>{
-  getOwnBlog()
-},[])
+  useEffect(() => {
+    getOwnBlog()
+  }, [])
 
-const formatDate = (index) => {
-  const date = new Date(blog[index].createdAt)
-  const formattedDate = date.toLocaleDateString("en-GB")
-  return formattedDate
-}
+  const formatDate = (index) => {
+    const date = new Date(blog[index].createdAt)
+    const formattedDate = date.toLocaleDateString("en-GB")
+    return formattedDate
+  }
 
   return (
     <div className="pb-3 pt-20 md:ml-[320px] h-screen">
@@ -149,20 +149,20 @@ const formatDate = (index) => {
                   <TableCell>{item.category}</TableCell>
                   <TableCell>{formatDate(index)}</TableCell>
                   <TableCell className="text-center">
-                    
+
 
 
                     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline"><BsThreeDotsVertical/></Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="start">
-        <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => navigate(`/dashboard/write-blog/${item._id}`)}> <Edit /> Edit</DropdownMenuItem>
-          <DropdownMenuItem className="text-red-500" onClick={() => deleteBlog(item._id)}> <Trash2 className="text-red-500"/> Delete</DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline"><BsThreeDotsVertical /></Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56" align="start">
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem onClick={() => navigate(`/dashboard/write-blog/${item._id}`)}> <Edit /> Edit</DropdownMenuItem>
+                          <DropdownMenuItem className="text-red-500" onClick={() => deleteBlog(item._id)}> <Trash2 className="text-red-500" /> Delete</DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
 
 
                   </TableCell>

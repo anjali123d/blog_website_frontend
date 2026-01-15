@@ -4,7 +4,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { ChartColumnBig, LogOut, Search, User } from "lucide-react";
 import { FaMoon, FaSun } from "react-icons/fa";
-
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 // Correct shadcn Avatar import
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 
@@ -47,19 +47,19 @@ const Navbar = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if(searchTerm.trim() !== ""){
+    if (searchTerm.trim() !== "") {
       navigate(`/search?q=${encodeURIComponent(searchTerm)}`)
       setSearchTerm("")
     }
   }
 
-  const toggleNav = ()=> {
+  const toggleNav = () => {
     setOpenNav(!openNav)
   }
- 
+
   const logoutHandler = async (e) => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/v1/user/logout`, {
+      const res = await axios.get(`${BASE_URL}/api/v1/user/logout`, {
         withCredentials: true,
       });
       if (res.data.success) {
@@ -91,7 +91,7 @@ const Navbar = () => {
               type="text"
               placeholder="Search..."
               value={searchTerm}
-              onChange={(e)=> setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="border border-gray-700 dark:bg-gray-900 bg-gray-300 w-[300px]"
             />
             <Button onClick={handleSearch} className="absolute right-0 top-0">
@@ -132,26 +132,26 @@ const Navbar = () => {
                   <DropdownMenuContent>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={()=> navigate ('/dashboard/profile')}>
-                        <User />
-                        <span>Profile</span>
+                    <DropdownMenuItem onClick={() => navigate('/dashboard/profile')}>
+                      <User />
+                      <span>Profile</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={()=> navigate ('/dashboard/your-blog')}>
-                        <ChartColumnBig />
-                        <span>Your Blogs</span>
+                    <DropdownMenuItem onClick={() => navigate('/dashboard/your-blog')}>
+                      <ChartColumnBig />
+                      <span>Your Blogs</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={()=> navigate ('/dashboard/comments')}>
-                        <LiaCommentSolid />
-                        <span>Comments</span>
+                    <DropdownMenuItem onClick={() => navigate('/dashboard/comments')}>
+                      <LiaCommentSolid />
+                      <span>Comments</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={()=> navigate ('/dashboard/write-blog')}>
-                        <TfiWrite />
-                        <span>Write Blogs</span>
+                    <DropdownMenuItem onClick={() => navigate('/dashboard/write-blog')}>
+                      <TfiWrite />
+                      <span>Write Blogs</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                        <LogOut />
-                        <span>Log out</span>
+                      <LogOut />
+                      <span>Log out</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -170,10 +170,10 @@ const Navbar = () => {
             )}
           </div>
           {
-            openNav ? <HiMenuAlt3 onClick={toggleNav} className="w-7 h-7 md:hidden"/> : <HiMenuAlt1 className="w-7 h-7 md:hidden" onClick={toggleNav}/>
+            openNav ? <HiMenuAlt3 onClick={toggleNav} className="w-7 h-7 md:hidden" /> : <HiMenuAlt1 className="w-7 h-7 md:hidden" onClick={toggleNav} />
           }
         </nav>
-        <ResponsiveMenu openNav={openNav} setOpenNav={setOpenNav} logoutHandler={logoutHandler}/>
+        <ResponsiveMenu openNav={openNav} setOpenNav={setOpenNav} logoutHandler={logoutHandler} />
       </div>
     </div>
   );

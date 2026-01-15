@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { Button } from "../components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -38,7 +39,7 @@ const WriteBlog = () => {
 
     try {
       dispatch(setLoading(true))
-      const res = await axios.post(`http://localhost:8000/api/v1/blog/`, { title, category }, {
+      const res = await axios.post(`${BASE_URL}/api/v1/blog/`, { title, category }, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`

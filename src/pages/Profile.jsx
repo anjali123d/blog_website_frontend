@@ -72,7 +72,7 @@
 //     console.log(input);
 //     try {
 //       dispatch(setLoading(true))
-//       const res = await axios.put(`http://localhost:8000/api/v1/user/profile/update`, formData, {
+//       const res = await axios.put(`${BASE_URL}/api/v1/user/profile/update`, formData, {
 //         headers:{
 //           "Content-Type":"multipart/form-data"
 //         },
@@ -293,6 +293,7 @@ import { Link } from "react-router-dom";
 import { FaFacebook, FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import {
   Dialog,
   DialogClose,
@@ -356,7 +357,7 @@ const Profile = () => {
       dispatch(setLoading(true));
 
       const res = await axios.put(
-        "http://localhost:8000/api/v1/user/profile/update",
+        "${BASE_URL}/api/v1/user/profile/update",
         formData,
         {
           withCredentials: true,
@@ -433,9 +434,9 @@ const Profile = () => {
 
             {/* Edit Dialog */}
             <Dialog open={open} onOpenChange={setOpen}>
-              
-                <Button onClick={()=>setOpen(true)}>Edit Profile</Button>
-              
+
+              <Button onClick={() => setOpen(true)}>Edit Profile</Button>
+
 
               <DialogContent>
                 <DialogHeader>
@@ -466,14 +467,14 @@ const Profile = () => {
                       <Button variant="outline">Cancel</Button>
                     </DialogClose>
                     <Button type="submit" onClick={submitHandler} >
-                        {
-                          loading ? (
-                            <>
-                              <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-                              please wait
-                            </>
-                          ) : ("Save Changes")
-                        }
+                      {
+                        loading ? (
+                          <>
+                            <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                            please wait
+                          </>
+                        ) : ("Save Changes")
+                      }
                     </Button>
                   </DialogFooter>
                 </form>

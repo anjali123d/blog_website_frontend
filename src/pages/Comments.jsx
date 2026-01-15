@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import { Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Comments = () => {
 
@@ -21,8 +22,8 @@ const Comments = () => {
 
   const getTotalComments = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/v1/comment/my-blogs/comments`, {withCredentials:true})
-      if(res.data.success){
+      const res = await axios.get(`${BASE_URL}/api/v1/comment/my-blogs/comments`, { withCredentials: true })
+      if (res.data.success) {
         setAllComments(res.data.comments || [])
       }
     } catch (error) {
@@ -34,7 +35,7 @@ const Comments = () => {
 
   useEffect(() => {
     getTotalComments()
-  },[])
+  }, [])
 
   return (
     <div className="pb-10 pt-20 md:ml-[320px] h-screen">
@@ -59,7 +60,7 @@ const Comments = () => {
                   <TableCell><h1 className="w-[50px] truncate md:w-full">{comment.content}</h1></TableCell>
                   <TableCell>{comment.userId.firstName}</TableCell>
                   <TableCell className="text-right flex gap-3 items-center justify-center">
-                    <Eye className="cursor-pointer" onClick={() => navigate(`/blogs/${comment.postId._id}`)}/>
+                    <Eye className="cursor-pointer" onClick={() => navigate(`/blogs/${comment.postId._id}`)} />
                   </TableCell>
                 </TableRow>
               ))}

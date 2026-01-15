@@ -20,19 +20,19 @@ import SearchList from './pages/SearchList'
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <><Navbar/><Home /><Footer /></>
+    element: <><Navbar /><Home /><Footer /></>
   },
   {
     path: "/blogs",
-    element: <><Navbar/><Blogs /><Footer /></>
+    element: <><Navbar /><Blogs /><Footer /></>
   },
   {
     path: "/about",
-    element: <><Navbar/><About /><Footer /></>
+    element: <><Navbar /><About /><Footer /></>
   },
   {
     path: "/search",
-    element: <><Navbar/><SearchList /><Footer /></>
+    element: <><Navbar /><SearchList /><Footer /></>
   },
   {
     path: "/login",
@@ -44,31 +44,31 @@ const router = createBrowserRouter([
   },
   {
     path: "/blogs/:blogId",
-    element: <><Navbar/><BlogView /></>
+    element: <><Navbar /><BlogView /></>
   },
   {
     path: "/dashboard",
-    element:<><Navbar/><Dashboard /></>,
-    children:[
+    element: <><Navbar /><Dashboard /></>,
+    children: [
       {
-        path:"profile",
-        element:<Profile />
+        path: "profile",
+        element: <Profile />
       },
       {
-        path:"your-blog",
-        element:<YourBlog />
+        path: "your-blog",
+        element: <YourBlog />
       },
       {
-        path:"comments",
-        element:<Comments />
+        path: "comments",
+        element: <Comments />
       },
       {
-        path:"write-blog",
-        element:<WriteBlog />
+        path: "write-blog",
+        element: <WriteBlog />
       },
       {
-        path:"write-blog/:blogId",
-        element:<UpdateBlog />
+        path: "write-blog/:blogId",
+        element: <UpdateBlog />
       }
     ]
   }
